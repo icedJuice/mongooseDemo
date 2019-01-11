@@ -6,7 +6,12 @@
 // var artiSchema = new Schema({
 //     title: String,
 //     arti: String,
-//     tags: String
+//     tags: String,
+//     author: String,
+//     created_at: Timestamp, // 时间戳
+//     created_at_iso: Date,
+//     update_at: Timestamp, // 时间戳
+//     update_at_iso: Date
 // })
 
 // // artis 文章表
@@ -15,19 +20,26 @@
 
 // var artiModel = artiConnect.model('artiModel', artiSchema);
 
+function _add () {
+
+}
+
+function _delete() {
+
+}
+
+function _update() {
+
+}
+
+function _find() {
+
+}
 var artis = {
-    add: function () {
-
-    },
-    delete: function () {
-
-    },
-    update: function () {
-
-    },
-    find: function () {
-
-    }
+    add: _add,
+    delete: _delete,
+    update: _update,
+    find: _find
 }
 
 module.exports = artis;

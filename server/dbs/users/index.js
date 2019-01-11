@@ -1,3 +1,7 @@
+var md5 = require('md5-node');
+// function md5 (value) {
+//     return value;
+// }
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
@@ -25,7 +29,7 @@ function _add (data, cb) {
         
         // 用户名未被使用
         userModel.create(
-            { username: data.username, password: data.password, token: 'abcdef' },
+            { username: data.username, password: md5(data.password), token: 'abcdef' },
             function (error, docs) {
                 // 服务器内部错误
                 if (error) return cb(500);
@@ -51,12 +55,14 @@ function _checkUserName(username, cb) {
 
 function _find (data, cb) {
     // data = {username: ***, password: ***}
-    userModel.find({'username': data.username},function (error,docs) {
+    userModel.find({username: data.username},function (error,docs) {
         // 服务器内部错误
         if (error) return cb(500);
         // 用户名密码匹配成功， 返回用户名和token
-        if (docs.length && docs[0].password == data.password) {
-            return cb(200, {username: docs[0].username, token: docs[0].token})
+        if (docs.length && docs[0].password == md5(data.password)) {
+            var token = md5(Date.now() + docs[0].username);
+            userModel.update({username: data.username }, {token: token});
+            return cb(200, {username: docs[0].username, token: token})
         }
         //  用户名不存在或密码错误
         else {
@@ -65,7 +71,12 @@ function _find (data, cb) {
     });
 } 
 
-function _update() {}
+function _update(_old, _new, cb) {
+    userModel.update(_old, _new, function (error) {
+        if (err) return cb(500);
+        return cb(200);
+    })
+}
 function _delete() {}
 var users = {
     add: _add,
