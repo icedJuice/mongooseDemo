@@ -2,24 +2,32 @@ var md5 = require('md5-node');
 
 var userModel = require('./model')
 
-function _add (data, cb) {
-    _checkUserName(data.username, function (errorCode) {
-        
-        // 服务器内部错误， 或者名字已被占用
-        if (errorCode === 500 || errorCode === 305) return cb(errorCode); 
-        
-        // 用户名未被使用
-        userModel.create(
-            { username: data.username, password: md5(data.password), token: 'abcdef' },
-            function (error, docs) {
-                // 服务器内部错误
-                if (error) return cb(500);
-                // 存入成功
-                return cb(200, {username: docs.username, token: docs.token});
-            }
-        )
+function _add (data) {
+    var um = new userModel({
+        username: data.username,
+        password: data.password
     })
+    return um.addUser()
 }
+
+// function _add (data, cb) {
+//     _checkUserName(data.username, function (errorCode) {
+        
+//         // 服务器内部错误， 或者名字已被占用
+//         if (errorCode === 500 || errorCode === 305) return cb(errorCode); 
+        
+//         // 用户名未被使用
+//         userModel.create(
+//             { username: data.username, password: md5(data.password), token: 'abcdef' },
+//             function (error, docs) {
+//                 // 服务器内部错误
+//                 if (error) return cb(500);
+//                 // 存入成功
+//                 return cb(200, {username: docs.username, token: docs.token});
+//             }
+//         )
+//     })
+// }
 
 function _checkUserName(username, cb) {
     userModel.find({'username': username}, function (error,docs) {

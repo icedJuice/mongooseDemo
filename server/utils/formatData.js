@@ -1,4 +1,6 @@
-function formatData(code, msg, data) {
+var errorMsgs = require('./errorCode');
+
+function formatData(errMsg, data) {
     return {
         status: {
             code: 0,
@@ -6,10 +8,10 @@ function formatData(code, msg, data) {
         },
         data: {
             status: {
-                code: code,
-                msg: msg
+                code: errorMsgs[errMsg],
+                msg: errMsg
             },
-            data: data
+            data: data || {}
         }
     }
 }

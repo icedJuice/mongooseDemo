@@ -57,26 +57,35 @@ routers.post('/login', function (req, res) {
             formatData(301, '无效的用户名或密码', {})
         )
     }
-    DB_Users.add(req.body, function (errCode, data) {
-
-        switch (errCode) {
-            case 200: 
-                res.send(
-                    formatData(errCode, 'ok', data)
-                );
-                break;
-            case 305:
-                res.send(
-                    formatData(errCode, '用户名已被占用', {})
-                );
-                break;
-            case 500:
-                res.send(
-                    formatData(errCode, '服务器内部错误', {})
-                );
-                break;
-        }
+    DB_Users.add(req.body).then((errCode, data)  => {
+        res.send(
+            formatData(errCode, data)
+        )
+    }).catch(errCode => {
+        res.send(
+            formatData(errCode)
+        )
     })
+    // DB_Users.add(req.body, function (errCode, data) {
+
+    //     switch (errCode) {
+    //         case 200: 
+    //             res.send(
+    //                 formatData(errCode, 'ok', data)
+    //             );
+    //             break;
+    //         case 305:
+    //             res.send(
+    //                 formatData(errCode, '用户名已被占用', {})
+    //             );
+    //             break;
+    //         case 500:
+    //             res.send(
+    //                 formatData(errCode, '服务器内部错误', {})
+    //             );
+    //             break;
+    //     }
+    // })
 })
 
 
