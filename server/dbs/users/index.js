@@ -1,27 +1,8 @@
 var md5 = require('md5-node');
-// function md5 (value) {
-//     return value;
-// }
-var mongoose = require('mongoose');
 
-var Schema = mongoose.Schema;
-
-// userSchema 用户信息
-var userSchema = new Schema({
-    username: String,
-    password: String,
-    token: String
-})
-
-// users 用户表
-// 存放用username/password/token 等字段
-var userConnect = mongoose.createConnection('mongodb://localhost:27017/users');
-
-var userModel = userConnect.model('userModel', userSchema);
+var userModel = require('./model')
 
 function _add (data, cb) {
-
-    console.log('_add');console.log(data);
     _checkUserName(data.username, function (errorCode) {
         
         // 服务器内部错误， 或者名字已被占用
