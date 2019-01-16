@@ -8,9 +8,9 @@ var artiSchema = new Schema({
     arti: String,
     tags: String,
     author: String,
-    created_at: Timestamp, // 时间戳
+    created_at: String, // 时间戳
     created_at_iso: Date,
-    update_at: Timestamp, // 时间戳
+    update_at: String, // 时间戳
     update_at_iso: Date
 })
 

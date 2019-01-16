@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 // 跨域处理 cors
 var cors = require('cors');
 app.use(cors({
-    origin:['http://localhost', 'http://localhost:80' ,'http://localhost:8080','http://localhost:3000','http://localhost:4000','http://127.0.0.1:8848','http://127.0.0.1:27017'],
+    origin:'*',
     methods:['GET','POST'],
     alloweHeaders:['Content-Type','Authorization']
 }))
