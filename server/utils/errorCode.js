@@ -17,5 +17,9 @@ module.exports = {
     // 注册登录相关
     301: 'invalid username or password.',
     302: 'error incorrect username or password.',
-    305: 'user name already exists.'
+    305: 'user name already exists.',
+
+    // 文章相关
+    311: 'invalid data: id.',
+    312: 'incorrect parameters'
 }

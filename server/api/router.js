@@ -40,4 +40,60 @@ routers.post('/login', function (req, res) {
 })
 
 
+// articles
+// 参数 
+// id: id,
+// tags: tag1,tag2,tag3
+// start: 10
+// limit: 20
+// 获取文章， 通过id 或者通过标签， 支持分页
+routers.get('/article', function (req, res) {
+    var params = req.query;
+    if (params.id) {
+        // 请求单个
+        DB_Artis.findById(params.id, function (errCode, data) {
+            res.send(
+                formatData(errCode, data)
+            )
+        })
+    } else {
+        // 请求多个
+        DB_Artis.find(params, (errCode, data) => {
+            res.send(
+                formatData(errCode, data)
+            )
+        })
+    }
+})
+
+routers.post('/publish', function (req, res) {
+    var data = req.body;
+    if (!data.title || !data.arti || !data.tags) {
+        return res.send(
+            formatData(312)
+        )
+    }
+    DB_Artis.publish(data, (errCode, data) => {
+        res.send(
+            formatData(errCode, data)
+        )
+    })
+
+})
+
+routers.post('/update', function (req, res) {
+    var data = req.body;
+    if (!data.id) {
+        return res.send(
+            formatData(311)
+        )
+    }
+    DB_Artis._update(data, (errCode, data) => {
+        res.send(
+            formatData(errCode, data)
+        )
+    })
+})
+
+
 module.exports = routers;
