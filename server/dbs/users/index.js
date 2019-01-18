@@ -39,11 +39,22 @@ function _update(_old, _new, cb) {
     })
 }
 function _delete() {}
+
+function _checkoutToken(token, cb) {
+    userModel.find({token: token}, function (error, docs) {
+        if (error) return cb(500);
+        if (docs.length) return cb();
+        return cb(404);
+    })
+}
+
 var users = {
+    userModel: userModel,
     addUser: _addUser,
     delete: _delete,
     update: _update,
-    signIn: _sigiIn
+    signIn: _sigiIn,
+    checkoutToken: _checkoutToken
 }
 
 module.exports = users;

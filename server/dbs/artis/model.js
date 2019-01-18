@@ -10,16 +10,14 @@ var artiSchema = new Schema({
     tags: String,
     author: String,
     created_at: {
-        type:Date,
-        default: Date.now
+        type: Number
     },
     created_at_iso: {
-        type: Date,
-        default: () => new Date()
+        type: Date
     },
     update_at: {
-        type:Date,
-        default: Date.now
+        type: Number,
+        default: () => new Date().getTime()
     }, // 时间戳
     update_at_iso: {
         type: Date,
@@ -29,6 +27,8 @@ var artiSchema = new Schema({
 
 // 新增
 artiSchema.methods.addArti = function () {
+    this.created_at = new Date().getTime();
+    this.created_at_iso = new Date();
     return new Promise((resolve, reject) => {
         this.save((error, doc) => {
             if (error) return reject(500);

@@ -12,6 +12,8 @@
 module.exports = {
     //全局
     500: 'sever error.',
+    404: 'not found.',
+    400: 'token error.',
     200: 'ok',
 
     // 注册登录相关

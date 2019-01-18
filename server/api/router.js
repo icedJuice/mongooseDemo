@@ -7,6 +7,25 @@ var db = require('../dbs/index');
 var DB_Users = db.users;
 var DB_Artis = db.artis;
 
+routers.all('/query/*', function (req, res, next) {
+    var token = req.query.token;
+    if (!token) {
+        return res.status(400).json(
+            formatData(400)
+        )
+    }
+    DB_Users.checkoutToken(token, function (errCode) {
+        if (errCode) {
+            return res.status(errCode).json(
+                formatData(errCode)
+            )
+        }
+        next()
+    })
+}, function (req, res, next){
+    next();
+});
+
 // 登陆
 routers.post('/signin', function (req, res) {
     // 登陆需要 username password
@@ -47,7 +66,7 @@ routers.post('/login', function (req, res) {
 // start: 10
 // limit: 20
 // 获取文章， 通过id 或者通过标签， 支持分页
-routers.get('/article', function (req, res) {
+routers.get('/query/article', function (req, res) {
     var params = req.query;
     if (params.id) {
         // 请求单个
@@ -66,7 +85,7 @@ routers.get('/article', function (req, res) {
     }
 })
 
-routers.post('/publish', function (req, res) {
+routers.post('/query/publish', function (req, res) {
     var data = req.body;
     if (!data.title || !data.arti || !data.tags) {
         return res.send(
@@ -81,7 +100,7 @@ routers.post('/publish', function (req, res) {
 
 })
 
-routers.post('/update', function (req, res) {
+routers.post('/query/update', function (req, res) {
     var data = req.body;
     if (!data.id) {
         return res.send(
