@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-var md5 = require('md5-node');
 var Schema = mongoose.Schema;
 
 // userSchema 用户信息
@@ -9,45 +8,30 @@ var userSchema = new Schema({
     token: String
 })
 
-userSchema.statics.findByName = function(name, cb) {
-    return new Promise((resolve, reject) => {
-        this.find({ name: name}, function (error, docs) {
-            if (error) {
-                return reject(500);
-            } else {
-                return resolve(200, docs);
-            }
-        })
-    });
-};
-
 userSchema.methods.addUser = function() {
     return new Promise((resolve, reject) => {
-        this.model('userModel').find({ name: this.name }, function (error, docs) {
+        this.model('userModel').find({username: this.username}, (error, docs) => {
             if (error) {
                 return reject(500);
             } else if (docs.length) {
-                return reject(305)
+                return reject(305);
             }
-            this.save((error, docs) => {
-                if (error) {
-                    reject(500)
-                } else {
-                    resolve(200, docs)
-                }
+            this.save((error, doc) => {
+                if (error) return reject(500);
+                resolve(doc)
             });
         });
     })
 };
 
-userSchema.methods.signIn = function (data) {
+userSchema.methods.signIn = function () {
     return new Promise((resolve, reject) => {
-        this.model('userModel').find({name: data.name}, function (error, docs) {
+        this.model('userModel').find({username: this.username}, (error, docs) => {
             if (error) {
                 return reject(500)
             }
-            if (docs.length && docs[0].password === md5(data.password)) {
-                resolve(200, {username: data.username, token: docs[0].token})
+            if (docs.length && docs[0].password === this.password) {
+                resolve({username: docs[0].username, token: docs[0].token})
             } else {
                 reject(301)
             }

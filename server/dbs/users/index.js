@@ -2,62 +2,34 @@ var md5 = require('md5-node');
 
 var userModel = require('./model')
 
-function _add (data) {
-    var um = new userModel({
+function _addUser (data, cb) {
+    
+    var uModel = new userModel({
         username: data.username,
-        password: data.password
+        password: md5(data.password),
+        token: md5(data.username + Date.now())
     })
-    return um.addUser()
+    
+    uModel.addUser().then((doc) => {
+        cb(200, {
+            username: doc.username,
+            token: doc.token
+        })
+    }).catch((errCode) => {
+        cb(errCode)
+    })
 }
 
-// function _add (data, cb) {
-//     _checkUserName(data.username, function (errorCode) {
-        
-//         // 服务器内部错误， 或者名字已被占用
-//         if (errorCode === 500 || errorCode === 305) return cb(errorCode); 
-        
-//         // 用户名未被使用
-//         userModel.create(
-//             { username: data.username, password: md5(data.password), token: 'abcdef' },
-//             function (error, docs) {
-//                 // 服务器内部错误
-//                 if (error) return cb(500);
-//                 // 存入成功
-//                 return cb(200, {username: docs.username, token: docs.token});
-//             }
-//         )
-//     })
-// }
-
-function _checkUserName(username, cb) {
-    userModel.find({'username': username}, function (error,docs) {
-        if (error) return cb(500);
-        if (docs.length) {
-            // 名字已被占用
-            return cb(305)
-        } else {
-            // 名字未被占用
-            cb(200)
-        }
-    });
-}
-
-function _find (data, cb) {
-    // data = {username: ***, password: ***}
-    userModel.find({username: data.username},function (error,docs) {
-        // 服务器内部错误
-        if (error) return cb(500);
-        // 用户名密码匹配成功， 返回用户名和token
-        if (docs.length && docs[0].password == md5(data.password)) {
-            var token = md5(Date.now() + docs[0].username);
-            userModel.update({username: data.username }, {token: token});
-            return cb(200, {username: docs[0].username, token: token})
-        }
-        //  用户名不存在或密码错误
-        else {
-            return cb(302)
-        }
-    });
+function _sigiIn (data, cb) {
+    var uModel = new userModel({
+        username: data.username,
+        password: md5(data.password)
+    })
+    uModel.signIn().then(doc => {
+        cb(200, doc)
+    }).catch(errCode => {
+        cb(errCode)
+    })
 } 
 
 function _update(_old, _new, cb) {
@@ -67,11 +39,22 @@ function _update(_old, _new, cb) {
     })
 }
 function _delete() {}
+
+function _checkoutToken(token, cb) {
+    userModel.find({token: token}, function (error, docs) {
+        if (error) return cb(500);
+        if (docs.length) return cb();
+        return cb(404);
+    })
+}
+
 var users = {
-    add: _add,
+    userModel: userModel,
+    addUser: _addUser,
     delete: _delete,
     update: _update,
-    find: _find
+    signIn: _sigiIn,
+    checkoutToken: _checkoutToken
 }
 
 module.exports = users;
