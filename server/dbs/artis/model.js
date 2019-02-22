@@ -25,6 +25,7 @@ var artiSchema = new Schema({
     }
 });
 
+
 // 新增
 artiSchema.methods.addArti = function () {
     this.created_at = new Date().getTime();

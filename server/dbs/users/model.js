@@ -27,9 +27,11 @@ userSchema.methods.addUser = function() {
 userSchema.methods.signIn = function () {
     return new Promise((resolve, reject) => {
         this.model('userModel').find({username: this.username}, (error, docs) => {
+            console.log(docs);
             if (error) {
                 return reject(500)
             }
+            console.log(this)
             if (docs.length && docs[0].password === this.password) {
                 resolve({username: docs[0].username, token: docs[0].token})
             } else {

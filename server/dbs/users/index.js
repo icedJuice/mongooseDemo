@@ -1,5 +1,5 @@
 var md5 = require('md5-node');
-
+var creatHash = require('../../utils/createHash');
 var userModel = require('./model')
 
 function _addUser (data, cb) {
@@ -20,7 +20,30 @@ function _addUser (data, cb) {
     })
 }
 
+// 添加信息
+// 用户名 随机，密码 123456
+// var i = 0;
+// var total = 20000;
+// var t;
+// for (; i < total; i ++) {
+    // _addUser({
+    //     username: '寒玉知',
+    //     password: md5('123456')
+    // }, function (err) {
+    //     // ..
+    // })
+// }
+
+// t = setInterval(function () {
+//     if (i == total) {
+//         clearInterval(t)
+//     }
+//     console.log(i)
+// }, 50)
+
+
 function _sigiIn (data, cb) {
+    // console.log(md5('123456'))
     var uModel = new userModel({
         username: data.username,
         password: md5(data.password)
